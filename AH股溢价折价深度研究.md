@@ -361,6 +361,92 @@ A 股和 H 股**同股同权、同分红**,理论上应该同价。但二者:
 
 ---
 
+## 附录 A:数据源与工具清单(用于 AH 溢价复盘 / 监控 / 回测)
+
+### A.1 免费网站(直接看,不用写代码)
+
+| 站点 | 链接 | 特点 |
+|---|---|---|
+| **AAStocks(香港)** | `aastocks.com/tc/stocks/market/ah.aspx` | **首推**。专门 A+H 比价页,实时溢价率、可排序 |
+| **东方财富·AH 比价** | `quote.eastmoney.com/center/gridlist.html#ah_comparison` | 内地最主流,含所有 AH 股实时对比、可下载 |
+| **同花顺·AH 溢价指数** | `stockpage.10jqka.com.cn/HSAHP/` | 指数走势 + 成分股 |
+| **智通财经·每日 AH 统计** | 搜 "智通AH统计\|X月X日" | 每日溢价率排行,倒挂榜一眼可见 |
+| **英为财情·HSCAHPI 成分股** | `cn.investing.com/indices/hs-cahpi-components` | 完整成分股 |
+| **MacroMicro** | `en.macromicro.me/charts/28212/hk-cahpi` | 指数历史图(英文) |
+
+### A.2 官方权威
+
+- **恒生指数公司** `hsi.com.hk`:每月更新的"沪深港通 AH 股溢价指数" factsheet(PDF,含成分股与权重)
+- **上交所** `sse.com.cn`:"上证沪港通 AH 溢价指数编制方案"
+- **港交所** `hkexnews.hk`:官方公告
+
+### A.3 编程 / 批量 / 回测(开源,免费首推)
+
+**AKShare(推荐):**
+```python
+import akshare as ak
+ak.stock_zh_ah_name()   # 所有 A+H 双上市名单
+ak.stock_zh_ah_spot()   # 实时行情比价(A价/H价/溢价率)
+ak.stock_zh_ah_daily(symbol="00939", start_year="2020",
+                     end_year="2026", adjust="hfq")  # 单股AH日线
+```
+- GitHub: `github.com/akfamily/akshare`,文档: `akshare.akfamily.xyz`
+- **Tushare Pro** `tushare.pro`(需积分/付费)、**efinance**(东财封装)
+- 付费终端:Wind、Choice、iFinD
+
+### A.4 HuggingFace / GitHub 其他项目
+
+- **HuggingFace 不是首选**:金融时序数据非其强项,无活跃维护的 AH 专门数据集
+- **GitHub 上零散量化项目**多数基于 AKShare/Tushare 的封装,直接用上游更靠谱
+
+### A.5 选型速查
+
+| 需求 | 首选 |
+|---|---|
+| 一次性看当前溢价榜单 | AAStocks / 东方财富 AH 比价 |
+| 系统性复盘/回测 | AKShare + Python |
+| 权威成分股名单 | 恒生指数公司 factsheet |
+| 极致数据质量 | Wind / Choice(付费) |
+
+---
+
+## 附录 B:雪球作为信息源的可靠性评估
+
+### B.1 数据层——可靠但功能不专精
+
+- 持 **上证所 Level-1 行情牌照**,沪深实时数据来自官方渠道,基础可信
+- 单股页面(如 `xueqiu.com/S/SH600036`)PE / PB / 股息率 / 财报 / K 线齐全,查单只股够用
+- 港股实时行情默认**延时 15 分钟**(未付费)
+- **无专门的 AH 溢价比价页**,做批量对比效率极低
+- **无官方对外 API**,爬虫不稳定,长期维护成本高
+
+### B.2 工具层——够玩不够专业
+
+- 组合、选股、指数估值等工具轻量易用
+- 深度不足以支持严肃的 AH 溢价因子研究/回测
+
+### B.3 社区层——混杂,需强筛选
+
+- **系统性利益冲突**:发帖人常持仓,大量"荐股"实为托盘
+- **信噪比低**:喊单、对骂、情绪贴淹没深度分析
+- **幸存者偏差**:亏损者沉默,盈利者晒收益,整体基调偏乐观
+- **无编辑审校**:错误数字、误读财报常见
+- 大 V 长文可作**另一视角参考**,但绝不当结论,需回到财报/研报/原始数据独立复核
+
+### B.4 结论矩阵
+
+| 用途 | 雪球评级 | 更优选择 |
+|---|---|---|
+| 快速查单股基本面 | ✅ 够用 | / |
+| **批量做 AH 溢价对比** | ❌ 不专精 | AAStocks / 东财 AH 比价 / AKShare |
+| 系统性回测/因子研究 | ❌ 不合适 | AKShare / BigQuant / 聚宽 / Wind |
+| 社区观点参考 | ⚠️ 强筛选 | 券商研报、集思录、知乎专业作者、中金/兴证策略团队公众号 |
+| 权威指数数据 | ❌ 没有 | 恒生指数公司 factsheet |
+
+**一句话**:雪球看单股 OK,做 AH 对比别用它,社区当"意见样本"不当"研究结论"。**AH 任务的正解 = AAStocks / 东财 AH 比价看当前 + AKShare 拉历史数据回测。**
+
+---
+
 ## 参考资料(Sources)
 
 **指数与行情数据**
